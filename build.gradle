@@ -1,6 +1,6 @@
 plugins {
     id 'java-library'
-    id 'fabric-loom' version '1.8-SNAPSHOT' apply false
+    id 'net.fabricmc.fabric-loom' version '1.16.0-alpha.16' apply false
     id 'net.neoforged.moddev' version '2.0.141' apply false
 }
 
@@ -26,14 +26,14 @@ subprojects {
 
     java {
         toolchain {
-            languageVersion = JavaLanguageVersion.of(21)
+            languageVersion = JavaLanguageVersion.of(25)
         }
         withSourcesJar()
     }
 
     tasks.withType(JavaCompile).configureEach {
         options.encoding = 'UTF-8'
-        options.release = 21
+        options.release = 25
     }
 
     dependencies {

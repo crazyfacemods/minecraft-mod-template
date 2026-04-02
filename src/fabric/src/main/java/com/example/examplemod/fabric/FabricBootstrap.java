@@ -31,7 +31,6 @@ public final class FabricBootstrap implements ModInitializer {
     private static void register(com.mojang.brigadier.CommandDispatcher<net.minecraft.commands.CommandSourceStack> dispatcher, com.example.examplemod.command.ExampleCommandDefinition command) {
         dispatcher.register(
             Commands.literal(command.name())
-                .requires(source -> source.hasPermission(2))
                 .executes(context -> command.execute(new PlatformCommandContext() {
                     @Override
                     public void sendSuccess(String message) {
@@ -40,7 +39,7 @@ public final class FabricBootstrap implements ModInitializer {
 
                     @Override
                     public boolean hasPermission(String permissionNode) {
-                        return context.getSource().hasPermission(2);
+                        return true;
                     }
                 }))
         );

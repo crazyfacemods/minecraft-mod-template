@@ -7,11 +7,11 @@ Modern Minecraft mod template for shared code across Fabric and NeoForge.
 - support Fabric and NeoForge on one Minecraft version
 - keep as much code as possible in `src/common/`
 - keep loader-specific modules thin
-- work on a fresh clone with only Java 21 installed
+- work on a fresh clone with only Java 25 installed
 
 ## Requirements
 
-- Java 21
+- Java 25
 
 Optional helper:
 
@@ -19,7 +19,7 @@ Optional helper:
 
 ## Fresh Clone
 
-On a fresh machine, contributors should only need Java 21 and the committed Gradle wrapper.
+On a fresh machine, contributors should only need Java 25 and the committed Gradle wrapper.
 
 Basic verification:
 
@@ -31,6 +31,8 @@ Basic verification:
 Gradle will download Minecraft, loader dependencies, mappings, and toolchain artifacts as needed.
 
 The first NeoForge setup can take a while because it prepares patched Minecraft artifacts.
+
+Minecraft `26.1` requires Java 25. Java 21 is no longer sufficient for this target.
 
 ## Development Runs
 

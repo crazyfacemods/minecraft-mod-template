@@ -13,11 +13,6 @@ dependencies {
 neoForge {
     version = rootProject.neoforge_version
 
-    parchment {
-        mappingsVersion = rootProject.parchment_mappings_version
-        minecraftVersion = rootProject.parchment_minecraft_version
-    }
-
     runs {
         client {
             client()

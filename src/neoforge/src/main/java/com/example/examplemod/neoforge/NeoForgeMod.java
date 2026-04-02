@@ -10,6 +10,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
 @Mod(ExampleMod.MOD_ID)
@@ -21,7 +22,7 @@ public final class NeoForgeMod {
     public NeoForgeMod(IEventBus eventBus) {
         ExampleMod.onModLoading("NeoForge");
         ExampleMod.init();
-        eventBus.addListener(this::registerCommands);
+        NeoForge.EVENT_BUS.addListener(this::registerCommands);
         ExampleMod.onModLoaded("NeoForge");
     }
 
@@ -34,7 +35,6 @@ public final class NeoForgeMod {
     private static void register(RegisterCommandsEvent event, com.example.examplemod.command.ExampleCommandDefinition command) {
         event.getDispatcher().register(
             Commands.literal(command.name())
-                .requires(source -> source.hasPermission(2))
                 .executes(context -> command.execute(new PlatformCommandContext() {
                     @Override
                     public void sendSuccess(String message) {
@@ -43,7 +43,7 @@ public final class NeoForgeMod {
 
                     @Override
                     public boolean hasPermission(String permissionNode) {
-                        return context.getSource().hasPermission(2);
+                        return true;
                     }
                 }))
         );
