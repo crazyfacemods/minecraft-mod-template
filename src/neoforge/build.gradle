@@ -1,0 +1,79 @@
+plugins {
+    id 'net.neoforged.moddev'
+}
+
+base {
+    archivesName = rootProject.mod_id
+}
+
+dependencies {
+    implementation project(':common')
+}
+
+neoForge {
+    version = rootProject.neoforge_version
+
+    parchment {
+        mappingsVersion = rootProject.parchment_mappings_version
+        minecraftVersion = rootProject.parchment_minecraft_version
+    }
+
+    runs {
+        client {
+            client()
+            systemProperty 'neoforge.enabledGameTestNamespaces', rootProject.mod_id
+        }
+
+        server {
+            server()
+            programArgument '--nogui'
+            systemProperty 'neoforge.enabledGameTestNamespaces', rootProject.mod_id
+        }
+
+        configureEach {
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+            logLevel = org.slf4j.event.Level.INFO
+        }
+    }
+
+    mods {
+        "${rootProject.mod_id}" {
+            sourceSet(sourceSets.main)
+        }
+    }
+}
+
+def generateModMetadata = tasks.register('generateModMetadata', ProcessResources) {
+    var replaceProperties = [
+        minecraft_version_range: rootProject.minecraft_version_range,
+        neoforge_version_range : rootProject.neoforge_version_range,
+        loader_version_range   : rootProject.loader_version_range,
+        mod_id                 : rootProject.mod_id,
+        mod_name               : rootProject.mod_name,
+        mod_license            : rootProject.mod_license,
+        mod_version            : rootProject.mod_version,
+        mod_authors            : rootProject.mod_authors,
+        mod_description        : rootProject.mod_description,
+    ]
+
+    inputs.properties(replaceProperties)
+    expand(replaceProperties)
+    from 'src/main/templates'
+    into layout.buildDirectory.dir('generated/sources/modMetadata')
+}
+
+sourceSets.main.resources.srcDir(generateModMetadata)
+neoForge.ideSyncTask(generateModMetadata)
+
+tasks.named('processResources', ProcessResources).configure {
+    filesMatching('pack.mcmeta') {
+        expand(mod_name: rootProject.mod_name)
+    }
+}
+
+tasks.named('jar', Jar).configure {
+    dependsOn project(':common').tasks.named('jar')
+    from {
+        zipTree(project(':common').tasks.named('jar').get().archiveFile.get().asFile)
+    }
+}

@@ -1,0 +1,53 @@
+plugins {
+    id 'fabric-loom'
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
+    mappings loom.officialMojangMappings()
+    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
+
+    implementation project(':common')
+}
+
+processResources {
+    var replaceProperties = [
+        mod_id                : rootProject.mod_id,
+        mod_version           : rootProject.mod_version,
+        mod_name              : rootProject.mod_name,
+        mod_description       : rootProject.mod_description,
+        mod_authors           : rootProject.mod_authors,
+        mod_license           : rootProject.mod_license,
+        minecraft_version     : rootProject.minecraft_version,
+        fabric_loader_version : rootProject.fabric_loader_version,
+    ]
+
+    inputs.properties(replaceProperties)
+
+    filesMatching('fabric.mod.json') {
+        expand(replaceProperties)
+    }
+}
+
+loom {
+    runs {
+        client {
+            client()
+            configName = 'Fabric Client'
+            ideConfigGenerated = true
+            runDir = '../../run/fabric-client'
+        }
+        server {
+            server()
+            configName = 'Fabric Server'
+            ideConfigGenerated = true
+            runDir = '../../run/fabric-server'
+        }
+    }
+}
+
+tasks.matching { it.name == 'remapJar' }.configureEach {
+    dependsOn project(':common').tasks.named('jar')
+    nestedJars.from(project(':common').tasks.named('jar'))
+}
